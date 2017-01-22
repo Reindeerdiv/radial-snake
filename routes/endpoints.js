@@ -6,6 +6,17 @@ register.attributes = {
 };
 
 function register(server, options, next) {
+  // CPP endpoint
+  server.route({
+    method: "GET",
+    path: "/cpp",
+    handler: {
+      file: {
+        path: "./resources/cpp/dist/cpp.bundle.js"
+      }
+    }
+  });
+
   // Scripts endpoint
   server.route({
     method: "GET",
