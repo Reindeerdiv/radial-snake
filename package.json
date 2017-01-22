@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "npm run parse:fonts && nodemon server.js",
-    "parse:fonts": "node helpers/font_parser.js"
+    "parse:fonts": "node helpers/font_parser.js",
+    "compile:cpp": "emcc -O1 --pre-js resources/cpp/pre.js --post-js resources/cpp/post.js --bind -o resources/cpp/dist/cpp.bundle.js resources/cpp/src/index.cpp"
   },
   "dependencies": {
     "async": "^2.1.4",
