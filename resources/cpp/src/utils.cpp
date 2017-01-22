@@ -9,16 +9,12 @@ namespace utils {
     return std::fmod((std::fmod(context, num) + num), num);
   }
 
-  double trim(double context, int decimals) {
-    return trim(context, decimals, literals::round);
-  }
-
-  double trim(double context, int decimals, const char* mode) {
+  double trim(double context, int decimals, const std::string mode) {
     double accumulator = context * std::pow(10, decimals);
 
-    if (std::strcmp(mode, literals::ceil) == 0)
+    if (mode.compare(literals::ceil) == 0)
       accumulator = std::ceil(accumulator);
-    else if (std::strcmp(mode, literals::floor) == 0)
+    else if (mode.compare(literals::floor) == 0)
       accumulator = std::floor(accumulator);
     else
       accumulator = std::round(accumulator);
@@ -26,56 +22,46 @@ namespace utils {
     return accumulator / std::pow(10, decimals);
   }
 
-  int isBetween(double context, double num1, double num2, const char* precision) {
+  int isBetween(double context, double num1, double num2, const std::string precision) {
     return compare(context, std::min(num1, num2), literals::gte, precision) &&
            compare(context, std::max(num1, num2), literals::lte, precision);
   }
 
-  int compare(double context, double num, const char* method, const char* precision) {
-    if (std::strcmp(precision, literals::fixed)) {
-      if (std::strcmp(method, literals::lt) == 0 ||
-          std::strcmp(method, literals::lte) == 0)
+  int compare(double context, double num, const std::string method, const std::string precision) {
+    // Fixed precision, "almost equal" with a deviation of ε
+    if (precision.compare(literals::fixed)) {
+      if (method.compare(literals::lt) == 0 ||
+          method.compare(literals::lte) == 0)
         return context <= num + DBL_EPSILON;
-      if (std::strcmp(method, literals::gt) == 0 ||
-          std::strcmp(method, literals::gte) == 0)
+      if (method.compare(literals::gt) == 0 ||
+          method.compare(literals::gte) == 0)
         return context >= num - DBL_EPSILON;
       return std::abs(context - num) <= DBL_EPSILON;
     }
-    else if (std::strcmp(precision, literals::pixel)) {
-      if (std::strcmp(method, literals::lt) == 0 ||
-          std::strcmp(method, literals::lte) == 0)
+    // Pixel precision, round comparison
+    else if (precision.compare(literals::pixel)) {
+      if (method.compare(literals::lt) == 0 ||
+          method.compare(literals::lte) == 0)
         return std::round(context) <= std::round(num);
-      if (std::strcmp(method, literals::gt) == 0 ||
-          std::strcmp(method, literals::gte) == 0)
+      if (method.compare(literals::gt) == 0 ||
+          method.compare(literals::gte) == 0)
         return std::round(context) >= std::round(num);
       return std::round(context) == std::round(num);
     }
+    // Exact precision
     else {
-      if (std::strcmp(method, literals::lt) == 0) return context < num;
-      if (std::strcmp(method, literals::lte) == 0) return context <= num;
-      if (std::strcmp(method, literals::gt) == 0) return context > num;
-      if (std::strcmp(method, literals::gte) == 0) return context >= num;
+      if (method.compare(literals::lt) == 0) return context < num;
+      if (method.compare(literals::lte) == 0) return context <= num;
+      if (method.compare(literals::gt) == 0) return context > num;
+      if (method.compare(literals::gte) == 0) return context >= num;
       return context == num;
     }
   }
 }
 
 EMSCRIPTEN_BINDINGS(utils_module) {
-  emscripten::function("utils_mod",
-    &utils::mod);
-
-  emscripten::function("utils_trim_round",
-    emscripten::select_overload<double(double, int)>(&utils::trim));
-
-  emscripten::function("utils_trim",
-    emscripten::select_overload<double(double, int, const char*)>(&utils::trim),
-    emscripten::allow_raw_pointers());
-
-  emscripten::function("utils_isBetween",
-    &utils::isBetween,
-    emscripten::allow_raw_pointers());
-
-  emscripten::function("utils_compare",
-    &utils::compare,
-    emscripten::allow_raw_pointers());
+  emscripten::function("utils_mod", &utils::mod);
+  emscripten::function("utils_trim", &utils::trim);
+  emscripten::function("utils_isBetween", &utils::isBetween);
+  emscripten::function("utils_compare", &utils::compare);
 }

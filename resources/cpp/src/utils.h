@@ -1,19 +1,19 @@
+#include <string>
+
 namespace utils {
   namespace literals {
-    const char* ceil = "ceil";
-    const char* floor = "floor";
-    const char* round = "round";
-    const char* gt = ">";
-    const char* gte = ">=";
-    const char* lt = "<";
-    const char* lte = "<=";
-    const char* fixed = "f";
-    const char* pixel = "px";
+    const std::string ceil = "ceil";
+    const std::string floor = "floor";
+    const std::string gt = ">";
+    const std::string gte = ">=";
+    const std::string lt = "<";
+    const std::string lte = "<=";
+    const std::string fixed = "f";
+    const std::string pixel = "px";
   }
 
   int mod(double context, double num);
-  double trim(double context, int decimals);
-  double trim(double context, int decimals, const char* mode);
-  int isBetween(double context, double num1, double num2, const char* precision);
-  int compare(double context, double num, const char* method, const char* precision);
+  double trim(double context, int decimals, const std::string mode);
+  int isBetween(double context, double num1, double num2, const std::string precision);
+  int compare(double context, double num, const std::string method, const std::string precision);
 }
