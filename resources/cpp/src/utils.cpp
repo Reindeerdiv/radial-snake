@@ -5,7 +5,7 @@
 #include "utils.h"
 
 namespace Utils {
-  int mod(double context, double num) {
+  double mod(double context, double num) {
     return std::fmod((std::fmod(context, num) + num), num);
   }
 
@@ -22,12 +22,12 @@ namespace Utils {
     return accumulator / std::pow(10, decimals);
   }
 
-  int isBetween(double context, double num1, double num2, const std::string precision) {
+  bool isBetween(double context, double num1, double num2, const std::string precision) {
     return compare(context, std::min(num1, num2), ">=", precision) &&
            compare(context, std::max(num1, num2), "<=", precision);
   }
 
-  int compare(double context, double num, const std::string method, const std::string precision) {
+  bool compare(double context, double num, const std::string method, const std::string precision) {
     // Fixed precision, "almost equal" with a deviation of ε
     if (precision.compare("fixed")) {
       if (method.compare("<") == 0 ||

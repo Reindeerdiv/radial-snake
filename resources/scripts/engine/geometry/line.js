@@ -18,27 +18,22 @@ Engine.Geometry.Line = class Line {
 
   // Gets the matching x value for a given y value
   getX(y) {
-    let x = Utils.trim((((y - this.y1) * (this.x2 - this.x1)) / (this.y2 - this.y1)) + this.x1, 9);
-    if (isNaN(x) || Utils.isBetween(x, this.x1, this.x2)) return x;
+    return CPP.Geometry.Line.getX(this, y);
   }
 
   // Gets the matching y value for a given x value
   getY(x) {
-    let y = Utils.trim((((x - this.x1) * (this.y2 - this.y1)) / (this.x2 - this.x1)) + this.y1, 9);
-    if (isNaN(y) || Utils.isBetween(y, this.y1, this.y2)) return y;
+    return CPP.Geometry.Line.getY(this, x);
   }
 
   // Returns if line has given point
   hasPoint(x, y) {
-    if (!this.boundsHavePoint(x, y)) return false;
-    let m = Utils.trim((this.y2 - this.y1) / (this.x2 - this.x1), 9);
-    return (y - this.y1) / (x - this.x1) == m;
+    return CPP.Geometry.Line.hasPoint(x, y);
   }
 
   // Returns if given point is contained by the bounds aka cage of line
   boundsHavePoint(x, y) {
-    return Utils.isBetween(x, this.x1, this.x2) &&
-           Utils.isBetween(y, this.y1, this.y2);
+    return CPP.Geometry.Line.boundsHavePoint(x, y);
   }
 
   getIntersection(shape) {
@@ -52,19 +47,7 @@ Engine.Geometry.Line = class Line {
 
   // line - line intersection method
   getLineIntersection(line) {
-    // Escape if lines are parallel
-    if (!(((this.x1 - this.x2) * (line.y1 - line.y2)) - ((this.y1 - this.y2) * (line.x1 - line.x2)))) return;
-
-    // Intersection point formula
-    let x = Utils.trim(((((this.x1 * this.y2) - (this.y1 * this.x2)) * (line.x1 - line.x2)) - ((this.x1 - this.x2) * ((line.x1 * line.y2) - (line.y1 * line.x2)))) /
-        (((this.x1 - this.x2) * (line.y1 - line.y2)) - ((this.y1 - this.y2) * (line.x1 - line.x2))), 9);
-    let y = Utils.trim(((((this.x1 * this.y2) - (this.y1 * this.x2)) * (line.y1 - line.y2)) - ((this.y1 - this.y2) * ((line.x1 * line.y2) - (line.y1 * line.x2)))) /
-        (((this.x1 - this.x2) * (line.y1 - line.y2)) - ((this.y1 - this.y2) * (line.x1 - line.x2))), 9);
-
-    if (Utils.isBetween(x, this.x1, this.x2) && Utils.isBetween(x, line.x1, line.x2) &&
-        Utils.isBetween(y, this.y1, this.y2) && Utils.isBetween(y, line.y1, line.y2)) {
-      return { x, y };
-    }
+    return CPP.Geometry.Line.getLineIntersection(this, line);
   }
 
   // line - circle intersection method
