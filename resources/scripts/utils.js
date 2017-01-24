@@ -32,7 +32,7 @@ Utils.trim = function (context, decimals, mode = "round") {
 
 // Tells if number is in specified range based on given precision.
 // See the "compare" method for more information about precision
-Utils.isBetween = function (context, num1, num2, precision = "raw") {
+Utils.isBetween = function (context, num1, num2, precision = "exact") {
   return CPP.Utils.isBetween(context, num1, num2, precision);
 };
 
