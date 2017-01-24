@@ -88,6 +88,12 @@ namespace Geometry {
 }
 
 EMSCRIPTEN_BINDINGS(geometry_line_module) {
+  emscripten::value_object<Geometry::Line::Shape>("geometry_line_shape")
+    .field("x1", &Geometry::Line::Shape::x1)
+    .field("y1", &Geometry::Line::Shape::y1)
+    .field("x2", &Geometry::Line::Shape::x2)
+    .field("y2", &Geometry::Line::Shape::y2);
+
   emscripten::function("geometry_line_getX",
     &Geometry::Line::getX);
   emscripten::function("geometry_line_getY",

@@ -28,12 +28,12 @@ Engine.Geometry.Line = class Line {
 
   // Returns if line has given point
   hasPoint(x, y) {
-    return CPP.Geometry.Line.hasPoint(x, y);
+    return CPP.Geometry.Line.hasPoint(this, x, y);
   }
 
   // Returns if given point is contained by the bounds aka cage of line
   boundsHavePoint(x, y) {
-    return CPP.Geometry.Line.boundsHavePoint(x, y);
+    return CPP.Geometry.Line.boundsHavePoint(this, x, y);
   }
 
   getIntersection(shape) {
