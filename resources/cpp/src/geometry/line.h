@@ -1,5 +1,4 @@
-#ifndef GEO_LINE_H
-#define GEO_LINE_H
+#pragma once
 
 #include <emscripten/val.h>
 
@@ -19,5 +18,3 @@ namespace Geometry {
     emscripten::val getLineIntersection(Shape context, Shape line);
   }
 }
-
-#endif

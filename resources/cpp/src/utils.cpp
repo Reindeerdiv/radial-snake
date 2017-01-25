@@ -1,12 +1,66 @@
 #include <cfloat>
 #include <cmath>
 #include <string>
+#include <utility>
 #include <emscripten/bind.h>
+#include <emscripten/val.h>
 #include "utils.h"
 
 namespace Utils {
+  template <class T>
+  template <class Fn, class... Args>
+  Chain<T> Chain<T>::link(Fn fn, Args&&... args) {
+    auto result = fn(accumulator, std::forward<Args>(args)...);
+    Chain chain = new Chain(result);
+    delete this;
+    return chain;
+  }
+
+  template <class T>
+  Chain<T>::Chain(T accumulator): accumulator(accumulator) {
+  }
+
+  template <class T>
+  template <class... Args>
+  Chain<T> Chain<T>::mod(Args&&... args) {
+    return Chain<T>::link(&mod, std::forward<Args>(args)...);
+  }
+
+  template <class T>
+  template <class... Args>
+  Chain<T> Chain<T>::trim(Args&&... args) {
+    return Chain<T>::link(&trim, std::forward<Args>(args)...);
+  }
+
+  template <class T>
+  template <class... Args>
+  Chain<T> Chain<T>::isBetween(Args&&... args) {
+    return Chain<T>::link(&isBetween, std::forward<Args>(args)...);
+  }
+
+  template <class T>
+  template <class... Args>
+  Chain<T> Chain<T>::compare(Args&&... args) {
+    return Chain<T>::link(&compare, std::forward<Args>(args)...);
+  }
+
+  template <class T>
+  T Chain<T>::result() {
+    delete this;
+    return accumulator;
+  }
+
+  template <class T>
+  Chain<T> chain(T accumulator) {
+    return new Chain<T>(accumulator);
+  }
+
   double mod(double context, double num) {
     return std::fmod((std::fmod(context, num) + num), num);
+  }
+
+  double trim(double context, int decimals) {
+    return trim(context, decimals, "round");
   }
 
   double trim(double context, int decimals, const std::string mode) {
@@ -61,7 +115,8 @@ namespace Utils {
 
 EMSCRIPTEN_BINDINGS(utils_module) {
   emscripten::function("utils_mod", &Utils::mod);
-  emscripten::function("utils_trim", &Utils::trim);
+  emscripten::function("utils_trim",
+    emscripten::select_overload<double(double, int, const std::string)>(&Utils::trim));
   emscripten::function("utils_isBetween", &Utils::isBetween);
   emscripten::function("utils_compare", &Utils::compare);
 }
