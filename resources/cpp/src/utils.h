@@ -6,7 +6,7 @@ namespace Utils {
   template<typename T>
   class Chain {
     private:
-      T accumulator;
+      T _accumulator;
 
       template<typename U, typename Fn, class... Args>
       Chain<U> link(Fn fn, Args&&... args);
@@ -33,8 +33,6 @@ namespace Utils {
   Chain<T> chain(T accumulator);
 
   double mod(double context, double num);
-
-  double trim(double context, int decimals);
 
   double trim(double context, int decimals, const std::string mode);
 

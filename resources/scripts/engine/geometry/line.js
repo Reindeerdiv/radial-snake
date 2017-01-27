@@ -18,22 +18,22 @@ Engine.Geometry.Line = class Line {
 
   // Gets the matching x value for a given y value
   getX(y) {
-    return CPP.Geometry.Line.getX(this, y);
+    return CPP.Geometry.Line.prototype.getMatchingX.call(this, y);
   }
 
   // Gets the matching y value for a given x value
   getY(x) {
-    return CPP.Geometry.Line.getY(this, x);
+    return CPP.Geometry.Line.prototype.getMatchingY.call(this, x);
   }
 
   // Returns if line has given point
   hasPoint(x, y) {
-    return CPP.Geometry.Line.hasPoint(this, x, y);
+    return CPP.Geometry.Line.prototype.hasPoint.call(this, x, y);
   }
 
   // Returns if given point is contained by the bounds aka cage of line
   boundsHavePoint(x, y) {
-    return CPP.Geometry.Line.boundsHavePoint(this, x, y);
+    return CPP.Geometry.Line.prototype.boundsHavePoint.call(this, x, y);
   }
 
   getIntersection(shape) {
@@ -47,7 +47,7 @@ Engine.Geometry.Line = class Line {
 
   // line - line intersection method
   getLineIntersection(line) {
-    return CPP.Geometry.Line.getLineIntersection(this, line);
+    return CPP.Geometry.Line.prototype.getLineIntersection.call(this, line);
   }
 
   // line - circle intersection method

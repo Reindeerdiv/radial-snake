@@ -10,14 +10,14 @@ namespace Utils {
   template<typename T>
   template<typename U, typename Fn, typename... Args>
   Chain<U> Chain<T>::link(Fn fn, Args&&... args) {
-    U result = fn(accumulator, std::forward<Args>(args)...);
+    U result = fn(_accumulator, std::forward<Args>(args)...);
     Chain<U> chain = new Chain<U>(result);
     delete this;
     return chain;
   }
 
   template<typename T>
-  Chain<T>::Chain(T accumulator): accumulator(accumulator) {
+  Chain<T>::Chain(T accumulator): _accumulator(accumulator) {
   }
 
   template<>
@@ -47,7 +47,7 @@ namespace Utils {
   template<typename T>
   T Chain<T>::result() {
     delete this;
-    return accumulator;
+    return _accumulator;
   }
 
   template<typename T>
@@ -59,11 +59,7 @@ namespace Utils {
     return std::fmod((std::fmod(context, num) + num), num);
   }
 
-  double trim(double context, int decimals) {
-    return trim(context, decimals, "round");
-  }
-
-  double trim(double context, int decimals, const std::string mode) {
+  double trim(double context, int decimals, const std::string mode = "round") {
     double accumulator = context * std::pow(10, decimals);
 
     if (mode.compare("ceil") == 0)
@@ -115,8 +111,7 @@ namespace Utils {
 
 EMSCRIPTEN_BINDINGS(utils_module) {
   emscripten::function("utils_mod", &Utils::mod);
-  emscripten::function("utils_trim",
-    emscripten::select_overload<double(double, int, const std::string)>(&Utils::trim));
+  emscripten::function("utils_trim", &Utils::trim);
   emscripten::function("utils_isBetween", &Utils::isBetween);
   emscripten::function("utils_compare", &Utils::compare);
 }
