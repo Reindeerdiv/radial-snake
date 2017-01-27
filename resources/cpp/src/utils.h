@@ -3,33 +3,33 @@
 #include <string>
 
 namespace Utils {
-  template <class T>
+  template<typename T>
   class Chain {
     private:
       T accumulator;
 
-      template <class Fn, class... Args>
-      Chain<T> link(Fn fn, Args&&... args);
+      template<typename U, typename Fn, class... Args>
+      Chain<U> link(Fn fn, Args&&... args);
 
     public:
       Chain(T accumulator);
 
-      template <class... Args>
-      Chain<T> mod(Args&&... args);
+      template<typename... Args>
+      Chain<double> mod(Args&&... args);
 
-      template <class... Args>
-      Chain<T> trim(Args&&... args);
+      template<typename... Args>
+      Chain<double> trim(Args&&... args);
 
-      template <class... Args>
-      Chain<T> isBetween(Args&&... args);
+      template<typename... Args>
+      Chain<bool> isBetween(Args&&... args);
 
-      template <class... Args>
-      Chain<T> compare(Args&&... args);
+      template<typename... Args>
+      Chain<bool> compare(Args&&... args);
 
       T result();
   };
 
-  template <class T>
+  template<typename T>
   Chain<T> chain(T accumulator);
 
   double mod(double context, double num);

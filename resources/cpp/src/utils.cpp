@@ -7,50 +7,50 @@
 #include "utils.h"
 
 namespace Utils {
-  template <class T>
-  template <class Fn, class... Args>
-  Chain<T> Chain<T>::link(Fn fn, Args&&... args) {
-    auto result = fn(accumulator, std::forward<Args>(args)...);
-    Chain chain = new Chain(result);
+  template<typename T>
+  template<typename U, typename Fn, typename... Args>
+  Chain<U> Chain<T>::link(Fn fn, Args&&... args) {
+    U result = fn(accumulator, std::forward<Args>(args)...);
+    Chain<U> chain = new Chain<U>(result);
     delete this;
     return chain;
   }
 
-  template <class T>
+  template<typename T>
   Chain<T>::Chain(T accumulator): accumulator(accumulator) {
   }
 
-  template <class T>
-  template <class... Args>
-  Chain<T> Chain<T>::mod(Args&&... args) {
-    return Chain<T>::link(&mod, std::forward<Args>(args)...);
+  template<>
+  template<typename... Args>
+  Chain<double> Chain<double>::mod(Args&&... args) {
+    return link<double>(&mod, std::forward<Args>(args)...);
   }
 
-  template <class T>
-  template <class... Args>
-  Chain<T> Chain<T>::trim(Args&&... args) {
-    return Chain<T>::link(&trim, std::forward<Args>(args)...);
+  template<>
+  template<typename... Args>
+  Chain<double> Chain<double>::trim(Args&&... args) {
+    return link<double>(&trim, std::forward<Args>(args)...);
   }
 
-  template <class T>
-  template <class... Args>
-  Chain<T> Chain<T>::isBetween(Args&&... args) {
-    return Chain<T>::link(&isBetween, std::forward<Args>(args)...);
+  template<>
+  template<typename... Args>
+  Chain<bool> Chain<double>::isBetween(Args&&... args) {
+    return link<bool>(&isBetween, std::forward<Args>(args)...);
   }
 
-  template <class T>
-  template <class... Args>
-  Chain<T> Chain<T>::compare(Args&&... args) {
-    return Chain<T>::link(&compare, std::forward<Args>(args)...);
+  template<>
+  template<typename... Args>
+  Chain<bool> Chain<double>::compare(Args&&... args) {
+    return link<bool>(&compare, std::forward<Args>(args)...);
   }
 
-  template <class T>
+  template<typename T>
   T Chain<T>::result() {
     delete this;
     return accumulator;
   }
 
-  template <class T>
+  template<typename T>
   Chain<T> chain(T accumulator) {
     return new Chain<T>(accumulator);
   }
