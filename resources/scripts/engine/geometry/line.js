@@ -10,6 +10,13 @@ Engine.Geometry.Line = class Line {
     this.y2 = Utils.trim(y2, 9);
   }
 
+  _ccall(method, ...args) {
+    let line = new CPP.Geometry.Line(this.x1, this.y1, this.x2, this.y2);
+    let result = line[method](...args);
+    line.delete();
+    return result;
+  }
+
   // Draws the line on the given context
   draw(context) {
     context.moveTo(this.x1, this.y1);
@@ -18,22 +25,22 @@ Engine.Geometry.Line = class Line {
 
   // Gets the matching x value for a given y value
   getX(y) {
-    return CPP.Geometry.Line.prototype.getMatchingX.call(this, y);
+    return this._ccall("getMatchingX", y);
   }
 
   // Gets the matching y value for a given x value
   getY(x) {
-    return CPP.Geometry.Line.prototype.getMatchingY.call(this, x);
+    return this._ccall("getMatchingY", x);
   }
 
   // Returns if line has given point
   hasPoint(x, y) {
-    return CPP.Geometry.Line.prototype.hasPoint.call(this, x, y);
+    return this._ccall("hasPoint", x, y);
   }
 
   // Returns if given point is contained by the bounds aka cage of line
   boundsHavePoint(x, y) {
-    return CPP.Geometry.Line.prototype.boundsHavePoint.call(this, x, y);
+    return this._ccall("boundsHavePoint", x, y);
   }
 
   getIntersection(shape) {
@@ -47,7 +54,10 @@ Engine.Geometry.Line = class Line {
 
   // line - line intersection method
   getLineIntersection(line) {
-    return CPP.Geometry.Line.prototype.getLineIntersection.call(this, line);
+    let cline = new CPP.Geometry.Line(line.x1, line.y1, line.x2, line.y2);
+    let result = this._ccall(cline);
+    cline.delete();
+    return result;
   }
 
   // line - circle intersection method

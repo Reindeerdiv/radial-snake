@@ -7,6 +7,7 @@ return {
   },
 
   Geometry: {
+    Point: Module.geometry_point,
     Line: Module.geometry_line
   }
 };
