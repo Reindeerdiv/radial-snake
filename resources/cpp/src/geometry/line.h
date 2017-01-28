@@ -1,42 +1,47 @@
 #pragma once
 
 #include <emscripten/val.h>
+#include "../nullable.h"
+#include "point.h"
 
-namespace Geometry {
+namespace geometry {
   class Line {
-    private:
-      double _x1;
-      double _y1;
-      double _x2;
-      double _y2;
+  public:
+    double _x1;
+    double _y1;
+    double _x2;
+    double _y2;
 
-    public:
-      Line(double x1, double y1, double x2, double y2);
+    Line(double x1, double y1, double x2, double y2);
 
-      emscripten::val getMatchingX(double y);
+    Nullable<double> getMatchingX(double y);
 
-      emscripten::val getMatchingY(double x);
+    Nullable<double> getMatchingY(double x);
 
-      bool hasPoint(double x, double y);
+    bool hasPoint(double x, double y);
 
-      bool boundsHavePoint(double x, double y);
+    bool boundsHavePoint(double x, double y);
 
-      emscripten::val getLineIntersection(Line line);
+    Nullable<Point> getLineIntersection(Line line);
+  };
 
-      double getX1() const;
+  class EMLine : public Line {
+  public:
+    double _x1;
+    double _y1;
+    double _x2;
+    double _y2;
 
-      void setX1(double x);
+    EMLine(double x1, double y1, double x2, double y2);
 
-      double getY1() const;
+    emscripten::val getMatchingX(double y);
 
-      void setY1(double y);
+    emscripten::val getMatchingY(double x);
 
-      double getX2() const;
+    bool hasPoint(double x, double y);
 
-      void setX2(double x);
+    bool boundsHavePoint(double x, double y);
 
-      double getY2() const;
-
-      void setY2(double y);
+    emscripten::val getLineIntersection(EMLine line);
   };
 }

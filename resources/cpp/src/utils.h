@@ -2,31 +2,31 @@
 
 #include <string>
 
-namespace Utils {
+namespace utils {
   template<typename T>
   class Chain {
-    private:
-      T _accumulator;
+  private:
+    T _accumulator;
 
-      template<typename U, typename Fn, class... Args>
-      Chain<U> link(Fn fn, Args&&... args);
+    template<typename U, typename Fn, class... Args>
+    Chain<U> link(Fn fn, Args&&... args);
 
-    public:
-      Chain(T accumulator);
+  public:
+    Chain(T accumulator);
 
-      template<typename... Args>
-      Chain<double> mod(Args&&... args);
+    template<typename... Args>
+    Chain<double> mod(Args&&... args);
 
-      template<typename... Args>
-      Chain<double> trim(Args&&... args);
+    template<typename... Args>
+    Chain<double> trim(Args&&... args);
 
-      template<typename... Args>
-      Chain<bool> isBetween(Args&&... args);
+    template<typename... Args>
+    Chain<bool> isBetween(Args&&... args);
 
-      template<typename... Args>
-      Chain<bool> compare(Args&&... args);
+    template<typename... Args>
+    Chain<bool> compare(Args&&... args);
 
-      T result();
+    T result();
   };
 
   template<typename T>

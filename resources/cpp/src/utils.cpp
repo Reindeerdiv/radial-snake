@@ -6,7 +6,7 @@
 #include <emscripten/val.h>
 #include "utils.h"
 
-namespace Utils {
+namespace utils {
   template<typename T>
   template<typename U, typename Fn, typename... Args>
   Chain<U> Chain<T>::link(Fn fn, Args&&... args) {
@@ -110,8 +110,8 @@ namespace Utils {
 }
 
 EMSCRIPTEN_BINDINGS(utils_module) {
-  emscripten::function("utils_mod", &Utils::mod);
-  emscripten::function("utils_trim", &Utils::trim);
-  emscripten::function("utils_isBetween", &Utils::isBetween);
-  emscripten::function("utils_compare", &Utils::compare);
+  emscripten::function("utils_mod", &utils::mod);
+  emscripten::function("utils_trim", &utils::trim);
+  emscripten::function("utils_isBetween", &utils::isBetween);
+  emscripten::function("utils_compare", &utils::compare);
 }
