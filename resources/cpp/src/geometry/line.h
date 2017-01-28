@@ -38,21 +38,5 @@ namespace geometry {
     bool boundsHavePoint(double x, double y);
 
     emscripten::val getLineIntersection(EMLine line);
-
-    double getX1() const;
-
-    void setX1(double x);
-
-    double getY1() const;
-
-    void setY1(double x);
-
-    double getX2() const;
-
-    void setX2(double x);
-
-    double getY2() const;
-
-    void setY2(double x);
   };
 }

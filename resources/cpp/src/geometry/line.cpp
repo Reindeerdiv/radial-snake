@@ -128,47 +128,15 @@ namespace geometry {
     emPoint.set("y", emscripten::val(point.y));
     return emPoint;
   }
-
-  double EMLine::getX1() const {
-    return _x1;
-  }
-
-  void EMLine::setX1(double x) {
-    _x1 = x;
-  }
-
-  double EMLine::getY1() const {
-    return _y1;
-  }
-
-  void EMLine::setY1(double y) {
-    _y1 = y;
-  }
-
-  double EMLine::getX2() const {
-    return _x2;
-  }
-
-  void EMLine::setX2(double x) {
-    _x2 = x;
-  }
-
-  double EMLine::getY2() const {
-    return _y2;
-  }
-
-  void EMLine::setY2(double y) {
-    _y2 = y;
-  }
 }
 
 EMSCRIPTEN_BINDINGS(geometry_line_module) {
   emscripten::class_<geometry::EMLine>("geometry_line")
     .constructor<double, double, double, double>()
-    .property("x1", &geometry::EMLine::getX1, &geometry::EMLine::setX1)
-    .property("y1", &geometry::EMLine::getY1, &geometry::EMLine::setY1)
-    .property("x2", &geometry::EMLine::getX2, &geometry::EMLine::setX2)
-    .property("y2", &geometry::EMLine::getY2, &geometry::EMLine::setY2)
+    .property<double>("x1", &geometry::EMLine::_x1)
+    .property<double>("y1", &geometry::EMLine::_y1)
+    .property<double>("x2", &geometry::EMLine::_x2)
+    .property<double>("y2", &geometry::EMLine::_y2)
     .function("getMatchingX", &geometry::EMLine::getMatchingX)
     .function("getMatchingY", &geometry::EMLine::getMatchingY)
     .function("hasPoint", &geometry::EMLine::hasPoint)
