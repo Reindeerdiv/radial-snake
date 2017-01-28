@@ -55,7 +55,7 @@ Engine.Geometry.Line = class Line {
   // line - line intersection method
   getLineIntersection(line) {
     let cline = new CPP.Geometry.Line(line.x1, line.y1, line.x2, line.y2);
-    let result = this._ccall(cline);
+    let result = this._ccall("getLineIntersection", cline);
     cline.delete();
     return result;
   }

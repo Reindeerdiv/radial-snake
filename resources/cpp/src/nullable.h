@@ -17,7 +17,7 @@ public:
 
   void resetValue();
 
-  bool hasValue();
+  bool hasValue() const;
 
-  bool isNull();
+  bool isNull() const;
 };
