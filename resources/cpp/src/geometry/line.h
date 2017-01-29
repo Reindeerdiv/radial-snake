@@ -22,21 +22,17 @@ namespace geometry {
 
     bool boundsHavePoint(double x, double y);
 
-    Nullable<Point> getLineIntersection(Line line);
+    Nullable<Point> getIntersection(Line line);
   };
 
   class EMLine : public Line {
   public:
-    EMLine(double x1, double y1, double x2, double y2);
+    using Line::Line;
 
     emscripten::val getMatchingX(double y);
 
     emscripten::val getMatchingY(double x);
 
-    bool hasPoint(double x, double y);
-
-    bool boundsHavePoint(double x, double y);
-
-    emscripten::val getLineIntersection(EMLine line);
+    emscripten::val getIntersection(EMLine line);
   };
 }

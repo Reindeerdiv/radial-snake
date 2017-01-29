@@ -60,7 +60,7 @@ namespace geometry {
            utils::isBetween(y, _y1, _y2, "round");
   }
 
-  Nullable<Point> Line::getLineIntersection(Line line) {
+  Nullable<Point> Line::getIntersection(Line line) {
     // Escape if lines are parallel
     if (!(((_x1 - _x2) * (line._y1 - line._y2)) -
           ((_y1 - _y2) * (line._x1 - line._x2))))
@@ -90,10 +90,6 @@ namespace geometry {
     return Nullable<Point>();
   }
 
-  EMLine::EMLine(double x1, double y1, double x2, double y2):  Line(x1, y1, x2, y2) {
-
-  }
-
   emscripten::val EMLine::getMatchingX(double y) {
     Nullable<double> nullableX = Line::getMatchingX(y);
     return nullableX.hasValue() ?
@@ -108,17 +104,9 @@ namespace geometry {
       emscripten::val::undefined();
   }
 
-  bool EMLine::hasPoint(double x, double y) {
-    return Line::hasPoint(x, y);
-  }
-
-  bool EMLine::boundsHavePoint(double x, double y) {
-    return Line::boundsHavePoint(x, y);
-  }
-
-  emscripten::val EMLine::getLineIntersection(EMLine emLine) {
+  emscripten::val EMLine::getIntersection(EMLine emLine) {
     Line line = Line(emLine._x1, emLine._y1, emLine._x2, emLine._y2);
-    Nullable<Point> nullablePoint = Line::getLineIntersection(line);
+    Nullable<Point> nullablePoint = Line::getIntersection(line);
 
     if (nullablePoint.isNull()) return emscripten::val::undefined();
 
@@ -131,15 +119,22 @@ namespace geometry {
 }
 
 EMSCRIPTEN_BINDINGS(geometry_line_module) {
-  emscripten::class_<geometry::EMLine>("geometry_line")
+  emscripten::class_<geometry::Line>("geometry_line_base")
     .constructor<double, double, double, double>()
-    .property<double>("x1", &geometry::EMLine::_x1)
-    .property<double>("y1", &geometry::EMLine::_y1)
-    .property<double>("x2", &geometry::EMLine::_x2)
-    .property<double>("y2", &geometry::EMLine::_y2)
+    .property<double>("x1", &geometry::Line::_x1)
+    .property<double>("y1", &geometry::Line::_y1)
+    .property<double>("x2", &geometry::Line::_x2)
+    .property<double>("y2", &geometry::Line::_y2)
+    .function("hasPoint", &geometry::EMLine::hasPoint)
+    .function("boundsHavePoint", &geometry::EMLine::boundsHavePoint);
+
+  emscripten::class_<geometry::EMLine, emscripten::base<geometry::Line>>("geometry_line")
+    .constructor<double, double, double, double>()
     .function("getMatchingX", &geometry::EMLine::getMatchingX)
     .function("getMatchingY", &geometry::EMLine::getMatchingY)
-    .function("hasPoint", &geometry::EMLine::hasPoint)
-    .function("boundsHavePoint", &geometry::EMLine::boundsHavePoint)
-    .function("getLineIntersection", &geometry::EMLine::getLineIntersection);
+    .function("getLineIntersection",
+      emscripten::select_overload<emscripten::val(geometry::EMLine)>(
+        &geometry::EMLine::getIntersection
+      )
+    );
 }
