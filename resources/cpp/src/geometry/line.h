@@ -3,6 +3,7 @@
 #include <emscripten/val.h>
 #include "../nullable.h"
 #include "point.h"
+#include "circle.h"
 
 namespace geometry {
   class Line {
@@ -34,5 +35,7 @@ namespace geometry {
     emscripten::val getMatchingY(double x);
 
     emscripten::val getIntersection(EMLine line);
+
+    emscripten::val getIntersection(EMCircle circle);
   };
 }

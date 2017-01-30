@@ -190,4 +190,56 @@ namespace geometry {
 
     return Nullable<std::vector<Point>>();
   }
+
+  emscripten::val Circle::getMatchingX(double y) {
+
+  }
+
+  emscripten::val Circle::getMatchingY(double x) {
+
+  }
+
+  emscripten::val Circle::getMatchingPoint(double rad) {
+
+  }
+
+  emscripten::val Circle::getMatchingRad(double x, double y) {
+
+  }
+
+  emscripten::val Circle::getIntersection(EMLine line) {
+
+  }
+
+  emscripten::val Circle::getIntersection(EMCircle circle) {
+
+  }
+}
+
+EMSCRIPTEN_BINDINGS(geometry_circle_module) {
+  emscripten::class_<geometry::Circle>("geometry_circle_base")
+    .constructor<double, double, double, double>()
+    .property<double>("x", &geometry::Circle::_x)
+    .property<double>("y", &geometry::Circle::_y)
+    .property<double>("r", &geometry::Circle::_r)
+    .property<double>("rad1", &geometry::Circle::_rad1)
+    .property<double>("rad2", &geometry::Circle::_rad2)
+    .function("hasPoint", &geometry::Circle::hasPoint);
+
+  emscripten::class_<geometry::EMCircle, emscripten::base<geometry::Line>>("geometry_line")
+    .constructor<double, double, double, double>()
+    .function("getMatchingX", &geometry::EMCircle::getMatchingX)
+    .function("getMatchingY", &geometry::EMCircle::getMatchingY)
+    .function("getMatchingPoint", &geometry::EMCircle::getMatchingPoint)
+    .function("getMatchingRad", &geometry::EMCircle::getMatchingRad)
+    .function("getLineIntersection",
+      emscripten::select_overload<emscripten::val(geometry::EMCircle)>(
+        &geometry::EMCircle::getIntersection
+      )
+    )
+    .function("getCircleIntersection",
+      emscripten::select_overload<emscripten::val(geometry::EMCircle)>(
+        &geometry::EMCircle::getIntersection
+      )
+    );
 }

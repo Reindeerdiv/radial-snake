@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <emscripten/val.h>
 #include "point.h"
 #include "line.h"
 #include "../nullable.h"
@@ -30,4 +31,21 @@ namespace geometry {
 
     Nullable<std::vector<Point>> getIntersection(Line line);
   }
+
+  class EMLine : public Circle {
+  public:
+    using Circle::Circle;
+
+    emscripten::val getMatchingX(double y);
+
+    emscripten::val getMatchingY(double x);
+
+    emscripten::val getMatchingPoint(double rad);
+
+    emscripten::val getMatchingRad(double x, double y);
+
+    emscripten::val getIntersection(EMLine line);
+
+    emscripten::val getIntersection(EMCircle circle);
+  };
 }

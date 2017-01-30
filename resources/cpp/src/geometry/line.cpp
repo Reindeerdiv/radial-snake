@@ -153,8 +153,8 @@ EMSCRIPTEN_BINDINGS(geometry_line_module) {
     .property<double>("y1", &geometry::Line::_y1)
     .property<double>("x2", &geometry::Line::_x2)
     .property<double>("y2", &geometry::Line::_y2)
-    .function("hasPoint", &geometry::EMLine::hasPoint)
-    .function("boundsHavePoint", &geometry::EMLine::boundsHavePoint);
+    .function("hasPoint", &geometry::Line::hasPoint)
+    .function("boundsHavePoint", &geometry::Line::boundsHavePoint);
 
   emscripten::class_<geometry::EMLine, emscripten::base<geometry::Line>>("geometry_line")
     .constructor<double, double, double, double>()
