@@ -4,6 +4,7 @@
 #include "point.h"
 #include "line.h"
 #include "../nullable.h"
+#include "../utils.h"
 
 namespace geometry {
   Circle::Circle(double x, double y, double r, double rad1, double rad2) {
@@ -23,6 +24,7 @@ namespace geometry {
     }
   }
 
+  // Gets the matching x value for the given radian
   Nullable<double> Circle::getMatchingX(double rad) {
     if (!utils::chain(rad).trim(9).isBetween(_rad1, _rad2).result()) {
       return Nullable<double>();
@@ -31,6 +33,7 @@ namespace geometry {
     return Nullable<double>(utils::trim((_r * std::cos(rad)) + _x, 9));
   }
 
+  // Gets the matching y value for the given radian
   Nullable<double> Circle::getMatchingX(double rad) {
     if (!utils::chain(rad).trim(9).isBetween(_rad1, _rad2).result()) {
       return Nullable<double>();
@@ -39,6 +42,7 @@ namespace geometry {
     return Nullable<double>(utils::trim((_r * std::sin(rad)) + _y, 9));
   }
 
+  // Gets the matching point for the given radian
   Nullable<Point> Circle::getMatchingPoint(double rad) {
     if (!utils::isBetween(rad, _rad1, _rad2)) {
       return Nullable<Point>();
@@ -50,6 +54,7 @@ namespace geometry {
     });
   }
 
+  // Gets the matching radian for the given point
   Nullable<double> Circle::getMatchingRad(double x, double y) {
     double rad = std::atan2(y - _y, x - _x);
 
@@ -71,10 +76,12 @@ namespace geometry {
     return Nullable<double>();
   }
 
+  // Returns if circle has given points
   bool Circle::hasPoint(double x, double y) {
     return getRad(x, y).hasValue();
   }
 
+  // circle - circle intersection method
   Nullable<std::vector<Point>> getIntersection(Circle circle) {
     double dx = circle._x - _x;
     double dy = circle._y - _y;
@@ -130,5 +137,57 @@ namespace geometry {
     return Nullable<std::vector<Point>>();
   }
 
-  Nullable<std::vector<Point>> getIntersection(Line line);
+  // circle - line intersection method
+  Nullable<std::vector<Point>> getIntersection(Line line) {
+    double x1 = line.x1 - _x;
+    double x2 = line.x2 - _x;
+    double y1 = line.y1 - _y;
+    double y2 = line.y2 - _y;
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    double d = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+    double h = (x1 * y2) - (x2 * y1);
+    double delta = (std::pow(_r, 2) * std::pow(d, 2)) - std::pow(h, 2);
+
+    if (delta < 0) Nullable<std::vector<Point>>();
+
+    std::vector<Point> interPoints = {
+      {
+        (((h * dy) + (((dy / std::abs(dy)) || 1) * dx * std::sqrt(delta))) / std::pow(d, 2)) + _x,
+        (((-h * dx) + (std::abs(dy) * std::sqrt(delta))) / std::pow(d, 2)) + _y
+      },
+      {
+        (((h * dy) - (((dy / std::abs(dy)) || 1) * dx * std::sqrt(delta))) / std::pow(d, 2)) + _x,
+        (((-h * dx) - (std::abs(dy) * std::sqrt(delta))) / std::pow(d, 2)) + _y
+      }
+    };
+
+    std::transform(interPoints.begin(), interPoints.end(), interPoints.begin(),
+      [](std::vector<Point> point) {
+        return { utils::trim(point.x, 9), utils::trim(point.y, 9) }
+      }
+    );
+
+    auto begin = std::remove(interPoints.begin(), interPoints.end(),
+      [&line](Point point) {
+        return !line.boundsHavePoint(point.x, point.y);
+      }
+    );
+
+    interPoints.erase(begin, interPoints.end());
+
+    auto end = std::unique(interPoints.begin(), interPoints.end(),
+      [](std::vector<Point> pointA, std::vector<Point> pointB) {
+        return pointA.x == pointB.x && pointA.y == pointB.y;
+      }
+    );
+
+    interPoints.erase(interPoints.begin(), end);
+
+    if (interPoints.size) {
+      return Nullable<std::vector<Point>>(interPoints);
+    }
+
+    return Nullable<std::vector<Point>>();
+  }
 }

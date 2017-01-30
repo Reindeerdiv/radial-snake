@@ -1,8 +1,10 @@
+#include <vector>
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
 #include "../nullable.h"
 #include "../utils.h"
 #include "point.h"
+#include "circle.h"
 #include "line.h"
 
 namespace geometry {
@@ -13,6 +15,7 @@ namespace geometry {
     _y2 = utils::trim(y2, 9);
   }
 
+  // Gets the matching x value for a given y value
   Nullable<double> Line::getMatchingX(double y) {
     // If an error was thrown it means we divided a number by zero,
     // in which case there is not intersection point
@@ -29,6 +32,7 @@ namespace geometry {
     return Nullable<double>();
   }
 
+  // Gets the matching y value for a given x value
   Nullable<double> Line::getMatchingY(double x) {
     // If an error was thrown it means we divided a number by zero,
     // in which case there is not intersection point
@@ -45,6 +49,7 @@ namespace geometry {
     return Nullable<double>();
   }
 
+  // Returns if line has given point
   bool Line::hasPoint(double x, double y) {
     if (!boundsHavePoint(x, y)) return 0;
 
@@ -55,11 +60,13 @@ namespace geometry {
     return (y - _y1) / (x - _x1) == m;
   }
 
+  // Returns if given point is contained by the bounds aka cage of line
   bool Line::boundsHavePoint(double x, double y) {
     return utils::isBetween(x, _x1, _x2, "round") &&
            utils::isBetween(y, _y1, _y2, "round");
   }
 
+  // line - line intersection method
   Nullable<Point> Line::getIntersection(Line line) {
     // Escape if lines are parallel
     if (!(((_x1 - _x2) * (line._y1 - line._y2)) -
@@ -90,6 +97,11 @@ namespace geometry {
     return Nullable<Point>();
   }
 
+  // circle - circle intersection method
+  Nullable<std::vector<Point>> Line::getIntersection(Circle circle) {
+    return circle.getIntersection(*this);
+  }
+
   emscripten::val EMLine::getMatchingX(double y) {
     Nullable<double> nullableX = Line::getMatchingX(y);
     return nullableX.hasValue() ?
@@ -116,6 +128,22 @@ namespace geometry {
     emPoint.set("y", emscripten::val(point.y));
     return emPoint;
   }
+
+  emscripten::val EMLine::getIntersection(EMCircle emCircle) {
+    Nullable<std::vector<Point>> nullablePoints = Circle::getIntersection(*this);
+
+    if (nullablePoints.isNull()) return emscripten::val::undefined();
+
+    std::vector<Point> points = nullablePoints.getValue();
+    emscripten::val emPoints = emscripten::val::array();
+
+    for (unsigned i = 0; i < points.size; i++) {
+      emPoints[i].set("x", emscripten::val(points[i].x));
+      emPoints[i].set("y", emscripten::val(points[i].y));
+    }
+
+    return emPoints;
+  }
 }
 
 EMSCRIPTEN_BINDINGS(geometry_line_module) {
@@ -134,6 +162,11 @@ EMSCRIPTEN_BINDINGS(geometry_line_module) {
     .function("getMatchingY", &geometry::EMLine::getMatchingY)
     .function("getLineIntersection",
       emscripten::select_overload<emscripten::val(geometry::EMLine)>(
+        &geometry::EMLine::getIntersection
+      )
+    )
+    .function("getCircleIntersection",
+      emscripten::select_overload<emscripten::val(geometry::EMCircle)>(
         &geometry::EMLine::getIntersection
       )
     );
