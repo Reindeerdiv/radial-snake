@@ -8,7 +8,8 @@ return {
 
   Geometry: {
     Point: Module.geometry_point,
-    Line: Module.geometry_line
+    Line: Module.geometry_line,
+    Circle: Module.geometry_circle
   }
 };
 

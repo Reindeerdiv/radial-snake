@@ -2,11 +2,14 @@
 
 #include <vector>
 #include <emscripten/val.h>
+#include "../nullable.h"
 #include "point.h"
 #include "line.h"
-#include "../nullable.h"
 
 namespace geometry {
+  class Line;
+  class EMLine;
+
   class Circle {
   public:
     double _x;

@@ -7,6 +7,9 @@
 #include "circle.h"
 
 namespace geometry {
+  class Circle;
+  class EMCircle;
+
   class Line {
   public:
     double _x1;

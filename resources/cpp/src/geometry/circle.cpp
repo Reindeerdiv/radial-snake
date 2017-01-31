@@ -1,10 +1,10 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
-#include "point.h"
-#include "line.h"
 #include "../nullable.h"
 #include "../utils.h"
+#include "point.h"
+#include "line.h"
 
 namespace geometry {
   Circle::Circle(double x, double y, double r, double rad1, double rad2) {
@@ -121,7 +121,7 @@ namespace geometry {
     std::vector<Circle> circles = { *this, circle };
 
     std::for_each(circles.begin(), circles.end(), [&interPoints](Circle circle) {
-      auto begin = std::remove(interPoints.begin(), interPoints.end(),
+      auto begin = std::remove_if(interPoints.begin(), interPoints.end(),
         [&circle](Point point) {
           return !circle.hasPoint(point.x, point.y);
         }
@@ -168,7 +168,7 @@ namespace geometry {
       }
     );
 
-    auto begin = std::remove(interPoints.begin(), interPoints.end(),
+    auto begin = std::remove_if(interPoints.begin(), interPoints.end(),
       [&line](Point point) {
         return !line.boundsHavePoint(point.x, point.y);
       }
@@ -261,7 +261,7 @@ namespace geometry {
 
 EMSCRIPTEN_BINDINGS(geometry_circle_module) {
   emscripten::class_<geometry::Circle>("geometry_circle_base")
-    .constructor<double, double, double, double>()
+    .constructor<double, double, double, double, double>()
     .property<double>("x", &geometry::Circle::_x)
     .property<double>("y", &geometry::Circle::_y)
     .property<double>("r", &geometry::Circle::_r)
@@ -269,8 +269,8 @@ EMSCRIPTEN_BINDINGS(geometry_circle_module) {
     .property<double>("rad2", &geometry::Circle::_rad2)
     .function("hasPoint", &geometry::Circle::hasPoint);
 
-  emscripten::class_<geometry::EMCircle, emscripten::base<geometry::Line>>("geometry_line")
-    .constructor<double, double, double, double>()
+  emscripten::class_<geometry::EMCircle, emscripten::base<geometry::Circle>>("geometry_circle")
+    .constructor<double, double, double, double, double>()
     .function("getMatchingX", &geometry::EMCircle::getMatchingX)
     .function("getMatchingY", &geometry::EMCircle::getMatchingY)
     .function("getMatchingPoint", &geometry::EMCircle::getMatchingPoint)

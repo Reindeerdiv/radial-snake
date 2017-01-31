@@ -69,12 +69,18 @@ Engine.Geometry.Circle = class Circle {
 
   // circle - circle intersection method
   getCircleIntersection(circle) {
-    return this._ccall("getCircleIntersection", circle);
+    let ccircle = new CPP.Geometry.Circle(circle.x, circle.y, circle.r, circle.rad1, circle.rad2);
+    let result = this._ccall("getCircleIntersection", ccircle);
+    ccircle.delete();
+    return result;
   }
 
   // circle - line intersection method
   getLineIntersection(line) {
-    return this._ccall("getLineIntersection", line);
+    let cline = new CPP.Geometry.Line(line.x1, line.y1, line.x2, line.y2);
+    let result = this._ccall("getLineIntersection", cline);
+    cline.delete();
+    return result;
   }
 
   // circle - polygon intersection method
