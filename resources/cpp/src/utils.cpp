@@ -8,40 +8,39 @@
 
 namespace utils {
   template<typename T>
-  template<typename U, typename Fn, typename... Args>
-  Chain<U> Chain<T>::link(Fn fn, Args&&... args) {
-    U result = fn(_accumulator, std::forward<Args>(args)...);
-    Chain<U> chain = new Chain<U>(result);
-    delete this;
-    return chain;
-  }
-
-  template<typename T>
   Chain<T>::Chain(T accumulator): _accumulator(accumulator) {
   }
 
   template<>
-  template<typename... Args>
-  Chain<double> Chain<double>::mod(Args&&... args) {
-    return link<double>(&mod, std::forward<Args>(args)...);
+  Chain<double>* Chain<double>::mod(double num) {
+    double result = utils::mod(_accumulator, num);
+    Chain<double>* chain = new Chain<double>(result);
+    delete this;
+    return chain;
   }
 
   template<>
-  template<typename... Args>
-  Chain<double> Chain<double>::trim(Args&&... args) {
-    return link<double>(&trim, std::forward<Args>(args)...);
+  Chain<double>* Chain<double>::trim(int decimals, const std::string mode) {
+    double result = utils::trim(_accumulator, decimals, mode);
+    Chain<double>* chain = new Chain<double>(result);
+    delete this;
+    return chain;
   }
 
   template<>
-  template<typename... Args>
-  Chain<bool> Chain<double>::isBetween(Args&&... args) {
-    return link<bool>(&isBetween, std::forward<Args>(args)...);
+  Chain<bool>* Chain<double>::isBetween(double num1, double num2, const std::string precision) {
+    bool result = utils::isBetween(_accumulator, num1, num2, precision);
+    Chain<bool>* chain = new Chain<bool>(result);
+    delete this;
+    return chain;
   }
 
   template<>
-  template<typename... Args>
-  Chain<bool> Chain<double>::compare(Args&&... args) {
-    return link<bool>(&compare, std::forward<Args>(args)...);
+  Chain<bool>* Chain<double>::compare(double num, const std::string method, const std::string precision) {
+    bool result = utils::compare(_accumulator, num, method, precision);
+    Chain<bool>* chain = new Chain<bool>(result);
+    delete this;
+    return chain;
   }
 
   template<typename T>
@@ -51,7 +50,7 @@ namespace utils {
   }
 
   template<typename T>
-  Chain<T> chain(T accumulator) {
+  Chain<T>* chain(T accumulator) {
     return new Chain<T>(accumulator);
   }
 
@@ -59,7 +58,7 @@ namespace utils {
     return std::fmod((std::fmod(context, num) + num), num);
   }
 
-  double trim(double context, int decimals, const std::string mode = "round") {
+  double trim(double context, int decimals, const std::string mode) {
     double accumulator = context * std::pow(10, decimals);
 
     if (mode.compare("ceil") == 0)

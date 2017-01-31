@@ -30,9 +30,9 @@ namespace geometry {
     Nullable<std::vector<Point>> getIntersection(Circle circle);
 
     Nullable<std::vector<Point>> getIntersection(Line line);
-  }
+  };
 
-  class EMLine : public Circle {
+  class EMCircle : public Circle {
   public:
     using Circle::Circle;
 

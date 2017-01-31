@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <emscripten/val.h>
 #include "../nullable.h"
 #include "point.h"
@@ -24,6 +25,8 @@ namespace geometry {
     bool boundsHavePoint(double x, double y);
 
     Nullable<Point> getIntersection(Line line);
+
+    Nullable<std::vector<Point>> getIntersection(Circle circle);
   };
 
   class EMLine : public Line {

@@ -130,19 +130,7 @@ namespace geometry {
   }
 
   emscripten::val EMLine::getIntersection(EMCircle emCircle) {
-    Nullable<std::vector<Point>> nullablePoints = Circle::getIntersection(*this);
-
-    if (nullablePoints.isNull()) return emscripten::val::undefined();
-
-    std::vector<Point> points = nullablePoints.getValue();
-    emscripten::val emPoints = emscripten::val::array();
-
-    for (unsigned i = 0; i < points.size; i++) {
-      emPoints[i].set("x", emscripten::val(points[i].x));
-      emPoints[i].set("y", emscripten::val(points[i].y));
-    }
-
-    return emPoints;
+    return emCircle.getIntersection(*this);
   }
 }
 

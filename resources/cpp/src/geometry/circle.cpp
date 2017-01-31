@@ -26,7 +26,7 @@ namespace geometry {
 
   // Gets the matching x value for the given radian
   Nullable<double> Circle::getMatchingX(double rad) {
-    if (!utils::chain(rad).trim(9).isBetween(_rad1, _rad2).result()) {
+    if (!utils::chain(rad)->trim(9)->isBetween(_rad1, _rad2)->result()) {
       return Nullable<double>();
     }
 
@@ -34,8 +34,8 @@ namespace geometry {
   }
 
   // Gets the matching y value for the given radian
-  Nullable<double> Circle::getMatchingX(double rad) {
-    if (!utils::chain(rad).trim(9).isBetween(_rad1, _rad2).result()) {
+  Nullable<double> Circle::getMatchingY(double rad) {
+    if (!utils::chain(rad)->trim(9)->isBetween(_rad1, _rad2)->result()) {
       return Nullable<double>();
     }
 
@@ -68,8 +68,8 @@ namespace geometry {
     double greatestRad = std::abs(_rad1) > std::abs(_rad2) ? _rad1 : _rad2;
 
     // Check if the absolute radian is in the circle's radian range
-    if (utils::chain(rad + (2 * M_PI * std::floor(greatestRad / (2 * M_PI)))).trim(9).isBetween(_rad1, _rad2).result() ||
-        utils::chain(rad + (2 * M_PI * std::ceil(greatestRad / (2 * M_PI)))).trim(9).isBetween(_rad1, _rad2).result()) {
+    if (utils::chain(rad + (2 * M_PI * std::floor(greatestRad / (2 * M_PI))))->trim(9)->isBetween(_rad1, _rad2)->result() ||
+        utils::chain(rad + (2 * M_PI * std::ceil(greatestRad / (2 * M_PI))))->trim(9)->isBetween(_rad1, _rad2)->result()) {
       return Nullable<double>(rad);
     }
 
@@ -78,11 +78,11 @@ namespace geometry {
 
   // Returns if circle has given points
   bool Circle::hasPoint(double x, double y) {
-    return getRad(x, y).hasValue();
+    return getMatchingRad(x, y).hasValue();
   }
 
   // circle - circle intersection method
-  Nullable<std::vector<Point>> getIntersection(Circle circle) {
+  Nullable<std::vector<Point>> Circle::getIntersection(Circle circle) {
     double dx = circle._x - _x;
     double dy = circle._y - _y;
     double d = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
@@ -105,13 +105,13 @@ namespace geometry {
     };
 
     std::transform(interPoints.begin(), interPoints.end(), interPoints.begin(),
-      [](std::vector<Point> point) {
-        return { utils::trim(point.x, 9), utils::trim(point.y, 9) }
+      [](Point point) -> Point {
+        return { utils::trim(point.x, 9), utils::trim(point.y, 9) };
       }
     );
 
     auto end = std::unique(interPoints.begin(), interPoints.end(),
-      [](std::vector<Point> pointA, std::vector<Point> pointB) {
+      [](Point pointA, Point pointB) {
         return pointA.x == pointB.x && pointA.y == pointB.y;
       }
     );
@@ -120,7 +120,7 @@ namespace geometry {
 
     std::vector<Circle> circles = { *this, circle };
 
-    std::for_each(circles.begin(), circles.end(), [](Circle circle) {
+    std::for_each(circles.begin(), circles.end(), [&interPoints](Circle circle) {
       auto begin = std::remove(interPoints.begin(), interPoints.end(),
         [&circle](Point point) {
           return !circle.hasPoint(point.x, point.y);
@@ -130,7 +130,7 @@ namespace geometry {
       interPoints.erase(begin, interPoints.end());
     });
 
-    if (interPoints.size) {
+    if (interPoints.size()) {
       return Nullable<std::vector<Point>>(interPoints);
     }
 
@@ -138,11 +138,11 @@ namespace geometry {
   }
 
   // circle - line intersection method
-  Nullable<std::vector<Point>> getIntersection(Line line) {
-    double x1 = line.x1 - _x;
-    double x2 = line.x2 - _x;
-    double y1 = line.y1 - _y;
-    double y2 = line.y2 - _y;
+  Nullable<std::vector<Point>> Circle::getIntersection(Line line) {
+    double x1 = line._x1 - _x;
+    double x2 = line._x2 - _x;
+    double y1 = line._y1 - _y;
+    double y2 = line._y2 - _y;
     double dx = x2 - x1;
     double dy = y2 - y1;
     double d = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
@@ -163,8 +163,8 @@ namespace geometry {
     };
 
     std::transform(interPoints.begin(), interPoints.end(), interPoints.begin(),
-      [](std::vector<Point> point) {
-        return { utils::trim(point.x, 9), utils::trim(point.y, 9) }
+      [](Point point) -> Point {
+        return { utils::trim(point.x, 9), utils::trim(point.y, 9) };
       }
     );
 
@@ -177,42 +177,85 @@ namespace geometry {
     interPoints.erase(begin, interPoints.end());
 
     auto end = std::unique(interPoints.begin(), interPoints.end(),
-      [](std::vector<Point> pointA, std::vector<Point> pointB) {
+      [](Point pointA, Point pointB) {
         return pointA.x == pointB.x && pointA.y == pointB.y;
       }
     );
 
     interPoints.erase(interPoints.begin(), end);
 
-    if (interPoints.size) {
+    if (interPoints.size()) {
       return Nullable<std::vector<Point>>(interPoints);
     }
 
     return Nullable<std::vector<Point>>();
   }
 
-  emscripten::val Circle::getMatchingX(double y) {
-
+  emscripten::val EMCircle::getMatchingX(double y) {
+    Nullable<double> nullableX = Circle::getMatchingX(y);
+    return nullableX.hasValue() ?
+      emscripten::val(nullableX.getValue()) :
+      emscripten::val::undefined();
   }
 
-  emscripten::val Circle::getMatchingY(double x) {
-
+  emscripten::val EMCircle::getMatchingY(double x) {
+    Nullable<double> nullableY = Circle::getMatchingY(x);
+    return nullableY.hasValue() ?
+      emscripten::val(nullableY.getValue()) :
+      emscripten::val::undefined();
   }
 
-  emscripten::val Circle::getMatchingPoint(double rad) {
+  emscripten::val EMCircle::getMatchingPoint(double rad) {
+    Nullable<Point> nullablePoint = Circle::getMatchingPoint(rad);
 
+    if (nullablePoint.isNull()) return emscripten::val::undefined();
+
+    Point point = nullablePoint.getValue();
+    emscripten::val emPoint = emscripten::val::object();
+    emPoint.set("x", emscripten::val(point.x));
+    emPoint.set("y", emscripten::val(point.y));
+    return emPoint;
   }
 
-  emscripten::val Circle::getMatchingRad(double x, double y) {
-
+  emscripten::val EMCircle::getMatchingRad(double x, double y) {
+    Nullable<double> nullableRad = Circle::getMatchingRad(x, y);
+    return nullableRad.hasValue() ?
+      emscripten::val(nullableRad.getValue()) :
+      emscripten::val::undefined();
   }
 
-  emscripten::val Circle::getIntersection(EMLine line) {
+  emscripten::val EMCircle::getIntersection(EMLine emLine) {
+    Line line = Line(emLine._x1, emLine._y1, emLine._x2, emLine._y2);
+    Nullable<std::vector<Point>> nullablePoints = Circle::getIntersection(line);
 
+    if (nullablePoints.isNull()) return emscripten::val::undefined();
+
+    std::vector<Point> points = nullablePoints.getValue();
+    emscripten::val emPoints = emscripten::val::array();
+
+    for (unsigned i = 0; i < points.size(); i++) {
+      emPoints[i].set("x", emscripten::val(points[i].x));
+      emPoints[i].set("y", emscripten::val(points[i].y));
+    }
+
+    return emPoints;
   }
 
-  emscripten::val Circle::getIntersection(EMCircle circle) {
+  emscripten::val EMCircle::getIntersection(EMCircle emCircle) {
+    Circle circle = Circle(emCircle._x, emCircle._y, emCircle._r, emCircle._rad1, emCircle._rad2);
+    Nullable<std::vector<Point>> nullablePoints = Circle::getIntersection(circle);
 
+    if (nullablePoints.isNull()) return emscripten::val::undefined();
+
+    std::vector<Point> points = nullablePoints.getValue();
+    emscripten::val emPoints = emscripten::val::array();
+
+    for (unsigned i = 0; i < points.size(); i++) {
+      emPoints[i].set("x", emscripten::val(points[i].x));
+      emPoints[i].set("y", emscripten::val(points[i].y));
+    }
+
+    return emPoints;
   }
 }
 
