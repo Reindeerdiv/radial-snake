@@ -7,6 +7,11 @@
 #include "line.h"
 
 namespace geometry {
+  // x - The x value of the circle's center
+  // y - The y value of the circle's center
+  // r - The radius of the center
+  // rad1 - The first radian of the circle, not necessarily its beginning
+  // rad2 - The second radian of the circle, not necessarily its beginning
   Circle::Circle(double x, double y, double r, double rad1, double rad2) {
     _x = utils::trim(x, 9);
     _y = utils::trim(y, 9);
@@ -286,10 +291,10 @@ EMSCRIPTEN_BINDINGS(geometry_circle_module) {
 
   emscripten::class_<geometry::EMCircle, emscripten::base<geometry::Circle>>("geometry_circle")
     .constructor<double, double, double, double, double>()
-    .function("getMatchingX", &geometry::EMCircle::getMatchingX)
-    .function("getMatchingY", &geometry::EMCircle::getMatchingY)
-    .function("getMatchingPoint", &geometry::EMCircle::getMatchingPoint)
-    .function("getMatchingRad", &geometry::EMCircle::getMatchingRad)
+    .function("getX", &geometry::EMCircle::getMatchingX)
+    .function("getY", &geometry::EMCircle::getMatchingY)
+    .function("getPoint", &geometry::EMCircle::getMatchingPoint)
+    .function("getRad", &geometry::EMCircle::getMatchingRad)
     .function("getLineIntersection",
       emscripten::select_overload<emscripten::val(geometry::EMLine)>(
         &geometry::EMCircle::getIntersection

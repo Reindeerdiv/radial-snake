@@ -8,6 +8,10 @@
 #include "line.h"
 
 namespace geometry {
+  // x1 - The first point's x value
+  // y1 - The first point's y value
+  // x1 - The second point's x value
+  // y2 - The second point's y value
   Line::Line(double x1, double y1, double x2, double y2) {
     _x1 = utils::trim(x1, 9);
     _y1 = utils::trim(y1, 9);
@@ -146,8 +150,8 @@ EMSCRIPTEN_BINDINGS(geometry_line_module) {
 
   emscripten::class_<geometry::EMLine, emscripten::base<geometry::Line>>("geometry_line")
     .constructor<double, double, double, double>()
-    .function("getMatchingX", &geometry::EMLine::getMatchingX)
-    .function("getMatchingY", &geometry::EMLine::getMatchingY)
+    .function("getX", &geometry::EMLine::getMatchingX)
+    .function("getY", &geometry::EMLine::getMatchingY)
     .function("getLineIntersection",
       emscripten::select_overload<emscripten::val(geometry::EMLine)>(
         &geometry::EMLine::getIntersection
