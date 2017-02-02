@@ -246,7 +246,7 @@ namespace geometry {
     emscripten::val emPoints = emscripten::val::array();
 
     for (unsigned i = 0; i < points.size(); i++) {
-      Point point = points[i];
+      Point point = points.at(i);
       emscripten::val emPoint = emscripten::val::object();
       emPoint.set("x", emscripten::val(point.x));
       emPoint.set("y", emscripten::val(point.y));
@@ -268,7 +268,7 @@ namespace geometry {
     emscripten::val emPoints = emscripten::val::array();
 
     for (unsigned i = 0; i < points.size(); i++) {
-      Point point = points[i];
+      Point point = points.at(i);
       emscripten::val emPoint = emscripten::val::object();
       emPoint.set("x", emscripten::val(point.x));
       emPoint.set("y", emscripten::val(point.y));
