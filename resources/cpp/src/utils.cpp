@@ -36,6 +36,14 @@ namespace utils {
   }
 
   template<>
+  Chain<bool>* Chain<double>::compare(double num, const std::string precision) {
+    bool result = utils::compare(_accumulator, num, precision);
+    Chain<bool>* chain = new Chain<bool>(result);
+    delete this;
+    return chain;
+  }
+
+  template<>
   Chain<bool>* Chain<double>::compare(double num, const std::string method, const std::string precision) {
     bool result = utils::compare(_accumulator, num, method, precision);
     Chain<bool>* chain = new Chain<bool>(result);
@@ -84,11 +92,15 @@ namespace utils {
            compare(context, std::max(num1, num2), "<=", precision);
   }
 
+  bool compare(double context, double num, const std::string precision) {
+    return compare(context, num, "==", precision);
+  }
+
   // Initiates comparison operator between context number and a given number, only here
   // a precision can be specified
   bool compare(double context, double num, const std::string method, const std::string precision) {
     // Fixed precision, "almost equal" with a deviation of ε
-    if (precision.compare("fixed")) {
+    if (precision.compare("f") == 0) {
       if (method.compare("<") == 0 ||
           method.compare("<=") == 0)
         return context <= num + DBL_EPSILON;
@@ -98,7 +110,7 @@ namespace utils {
       return std::abs(context - num) <= DBL_EPSILON;
     }
     // Pixel precision, round comparison
-    else if (precision.compare("pixel")) {
+    else if (precision.compare("px") == 0) {
       if (method.compare("<") == 0 ||
           method.compare("<=") == 0)
         return std::round(context) <= std::round(num);
@@ -122,5 +134,9 @@ EMSCRIPTEN_BINDINGS(utils_module) {
   emscripten::function("utils_mod", &utils::mod);
   emscripten::function("utils_trim", &utils::trim);
   emscripten::function("utils_isBetween", &utils::isBetween);
-  emscripten::function("utils_compare", &utils::compare);
+  emscripten::function("utils_compare",
+    emscripten::select_overload<bool(double, double, const std::string, const std::string)>(
+      &utils::compare
+    )
+  );
 }

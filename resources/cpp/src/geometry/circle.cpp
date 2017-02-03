@@ -162,13 +162,13 @@ namespace geometry {
       {
         (((h * dy) + (((dy / std::abs(dy)) || 1) * dx * std::sqrt(delta)))
           / std::pow(d, 2)) + _x,
-        (((-h * dx) + (std::abs(dy) * std::sqrt(delta)))
+        (((-h * dx) - (std::abs(dy) * std::sqrt(delta)))
           / std::pow(d, 2)) + _y
       },
       {
         (((h * dy) - (((dy / std::abs(dy)) || 1) * dx * std::sqrt(delta)))
           / std::pow(d, 2)) + _x,
-        (((-h * dx) - (std::abs(dy) * std::sqrt(delta)))
+        (((-h * dx) + (std::abs(dy) * std::sqrt(delta)))
           / std::pow(d, 2)) + _y
       }
     };

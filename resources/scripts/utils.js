@@ -16,4 +16,15 @@ Utils = function Utils(context) {
   return chain;
 };
 
-Object.assign(Utils, CPP.Utils);
+Object.assign(Utils, CPP.Utils, {
+  // Overload handling
+  compare: function (arg0, arg1, arg2, arg3) {
+    let compare = CPP.Utils.compare;
+
+    switch (arguments.length) {
+      case 2: return compare(arg0, arg1);
+      case 3: return compare(arg0, arg1, arg3);
+      case 4: return compare(arg0, arg1, arg2, arg3);
+    }
+  }
+});
