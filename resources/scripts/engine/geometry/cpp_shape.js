@@ -3,11 +3,11 @@ Engine.Geometry.CPPShape = function CPPShape(shapeName) {
 
   return class extends CPPShape {
     constructor() {
-      // Will be the substitute for 'this'
+      // Initialize the C++ shape
       let shape = new CPPShape(...arguments);
-      // Inject the shape into the inheritance chain
-      let proto = Engine.Geometry[shapeName].prototype;
-      Object.setPrototypeOf(shape, proto);
+      // Inject the JS shape into the prototype chain
+      Object.setPrototypeOf(shape, new.target.prototype);
+      // C++ shape will be the substitute for 'this'
       return shape;
     }
   }
