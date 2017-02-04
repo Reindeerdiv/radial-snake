@@ -18,13 +18,26 @@ Utils = function Utils(context) {
 
 Object.assign(Utils, CPP.Utils, {
   // Overload handling
-  compare: function (arg0, arg1, arg2, arg3) {
+  compare(arg0, arg1, arg2, arg3) {
     let compare = CPP.Utils.compare;
 
     switch (arguments.length) {
       case 2: return compare(arg0, arg1);
       case 3: return compare(arg0, arg1, arg3);
       case 4: return compare(arg0, arg1, arg2, arg3);
+    }
+  },
+
+  proxy(Class) {
+    return class extends Class {
+      constructor() {
+        // Initialize original class
+        let that = new Class(...arguments);
+        // Inject caller's prototype into the prototype chain
+        Object.setPrototypeOf(that, new.target.prototype);
+        // Will original instance will be the substitute for 'this'
+        return that;
+      }
     }
   }
 });

@@ -1,4 +1,4 @@
-Engine.Geometry.Circle = class Circle extends Engine.Geometry.CPPShape("Circle") {
+Engine.Geometry.Circle = class Circle extends Utils.proxy(CPP.Geometry.Circle) {
   // Draws the circle on the given context
   draw(context) {
     context.arc(this.x, this.y, this.r, this.rad1, this.rad2);

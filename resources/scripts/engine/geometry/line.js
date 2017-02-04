@@ -1,4 +1,4 @@
-Engine.Geometry.Line = class Line extends Engine.Geometry.CPPShape("Line") {
+Engine.Geometry.Line = class Line extends Utils.proxy(CPP.Geometry.Line) {
   // Draws the line on the given context
   draw(context) {
     context.moveTo(this.x1, this.y1);

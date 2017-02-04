@@ -106,16 +106,17 @@ namespace geometry {
     double rx = (- dy * h) / d;
     double ry = (dx * h) / d;
 
-    std::vector<Point> interPoints = {
-      { x + rx, y + ry },
-      { x - rx, y - ry }
-    };
+    std::vector<Point> interPoints(2);
+    interPoints.at(0).x = x + rx;
+    interPoints.at(0).y = y + ry;
+    interPoints.at(1).x = x - rx;
+    interPoints.at(1).y = y - ry;
 
-    std::transform(interPoints.begin(), interPoints.end(), interPoints.begin(),
-      [](Point point) -> Point {
-        return { utils::trim(point.x, 9), utils::trim(point.y, 9) };
-      }
-    );
+    for (unsigned i = 0; i < interPoints.size(); i++) {
+      Point point = interPoints.at(i);
+      point.x = utils::trim(point.x, 9);
+      point.y = utils::trim(point.y, 9);
+    }
 
     auto pointsBegin = std::unique(interPoints.begin(), interPoints.end(),
       [](Point pointA, Point pointB) {
@@ -158,26 +159,21 @@ namespace geometry {
 
     if (delta < 0) Nullable<std::vector<Point>>();
 
-    std::vector<Point> interPoints = {
-      {
-        (((h * dy) + (((dy / std::abs(dy)) || 1) * dx * std::sqrt(delta)))
-          / std::pow(d, 2)) + _x,
-        (((-h * dx) - (std::abs(dy) * std::sqrt(delta)))
-          / std::pow(d, 2)) + _y
-      },
-      {
-        (((h * dy) - (((dy / std::abs(dy)) || 1) * dx * std::sqrt(delta)))
-          / std::pow(d, 2)) + _x,
-        (((-h * dx) + (std::abs(dy) * std::sqrt(delta)))
-          / std::pow(d, 2)) + _y
-      }
-    };
+    double sign = dy / std::abs(dy); if (std::isnan(sign)) sign = 1;
+    double sqrtx = sign * dx * std::sqrt(delta);
+    double sqrty = std::abs(dy) * std::sqrt(delta);
 
-    std::transform(interPoints.begin(), interPoints.end(), interPoints.begin(),
-      [](Point point) -> Point {
-        return { utils::trim(point.x, 9), utils::trim(point.y, 9) };
-      }
-    );
+    std::vector<Point> interPoints(2);
+    interPoints.at(0).x = (((h * dy) + sqrtx) / std::pow(d, 2)) + _x;
+    interPoints.at(0).y = (((-h * dx) + sqrty) / std::pow(d, 2)) + _y;
+    interPoints.at(1).x = (((h * dy) - sqrtx) / std::pow(d, 2)) + _x;
+    interPoints.at(1).y = (((-h * dx) - sqrty) / std::pow(d, 2)) + _y;
+
+    for (unsigned i = 0; i < interPoints.size(); i++) {
+      Point point = interPoints.at(i);
+      point.x = utils::trim(point.x, 9);
+      point.y = utils::trim(point.y, 9);
+    }
 
     auto pointsBegin = std::remove_if(interPoints.begin(), interPoints.end(),
       [this, &line](Point point) {
