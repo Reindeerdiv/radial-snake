@@ -113,7 +113,7 @@ namespace geometry {
     interPoints.at(1).y = y - ry;
 
     for (unsigned i = 0; i < interPoints.size(); i++) {
-      Point point = interPoints.at(i);
+      Point& point = interPoints.at(i);
       point.x = utils::trim(point.x, 9);
       point.y = utils::trim(point.y, 9);
     }
@@ -170,7 +170,7 @@ namespace geometry {
     interPoints.at(1).y = (((-h * dx) - sqrty) / std::pow(d, 2)) + _y;
 
     for (unsigned i = 0; i < interPoints.size(); i++) {
-      Point point = interPoints.at(i);
+      Point& point = interPoints.at(i);
       point.x = utils::trim(point.x, 9);
       point.y = utils::trim(point.y, 9);
     }
